@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useEsbuild } from '../../bundler/hooks';
 import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
+import Resizable from '../Resizable';
+import './code-cell.css';
 
 const CodeCell = () => {
   const { isTransforming, transformCode } = useEsbuild();
@@ -14,15 +16,25 @@ const CodeCell = () => {
   };
 
   return (
-    <div>
-      <CodeEditor initialValue={input} onChange={(v) => v && setInput(v)} />
-      <div>
-        <button onClick={onClick} disabled={isTransforming}>
-          {isTransforming ? 'Transforming...' : 'Submit'}
-        </button>
+    <Resizable direction="vertical">
+      <div
+        style={{
+          height: 'calc(100% - 10px)',
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        <Resizable direction="horizontal">
+          <CodeEditor initialValue={input} onChange={(v) => v && setInput(v)} />
+        </Resizable>
+        <div>
+          <button onClick={onClick} disabled={isTransforming}>
+            {isTransforming ? 'Transforming...' : 'Submit'}
+          </button>
+        </div>
+        <Preview code={code} />
       </div>
-      <Preview code={code} />
-    </div>
+    </Resizable>
   );
 };
 

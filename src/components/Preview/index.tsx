@@ -14,12 +14,14 @@ const Preview: FC<Props> = ({ code }) => {
   }, [code]);
 
   return (
-    <iframe
-      ref={iframeElementRef}
-      sandbox="allow-scripts"
-      srcDoc={iframeSourceDoc}
-      title="Output"
-    ></iframe>
+    <div className="preview-wrapper">
+      <iframe
+        ref={iframeElementRef}
+        sandbox="allow-scripts"
+        srcDoc={iframeSourceDoc}
+        title="Output"
+      ></iframe>
+    </div>
   );
 };
 

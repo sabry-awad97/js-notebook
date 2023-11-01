@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "format-react": "prettier src/**/*.{ts,tsx} --write",
+    "format-react": "prettier --config .prettierrc src/**/*.{ts,tsx} --write",
     "format-tauri": "cd src-tauri && cargo fmt",
     "format": "yarn format-react && yarn format-tauri",
     "prepare": "husky install"

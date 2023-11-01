@@ -1,6 +1,6 @@
-import * as esbuild from "esbuild-wasm";
-import { useEffect, useState } from "react";
-import { fetchPlugin, unpkgPlugin } from "../plugins";
+import * as esbuild from 'esbuild-wasm';
+import { useEffect, useState } from 'react';
+import { fetchPlugin, unpkgPlugin } from '../plugins';
 
 export const useEsbuild = () => {
   const [initialized, setInitialized] = useState(false);
@@ -10,7 +10,7 @@ export const useEsbuild = () => {
       if (!initialized) {
         await esbuild.initialize({
           worker: true,
-          wasmURL: "/esbuild.wasm",
+          wasmURL: '/esbuild.wasm',
         });
 
         setInitialized(true);
@@ -22,16 +22,16 @@ export const useEsbuild = () => {
 
   const transformCode = async (input: string): Promise<string> => {
     if (!initialized) {
-      return "";
+      return '';
     }
 
     const result = await esbuild.build({
-      entryPoints: ["index.js"],
+      entryPoints: ['index.js'],
       bundle: true,
       write: false,
       plugins: [unpkgPlugin(), fetchPlugin(input)],
       define: {
-        global: "window",
+        global: 'window',
       },
     });
 

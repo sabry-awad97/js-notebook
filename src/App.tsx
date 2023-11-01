@@ -1,17 +1,10 @@
-import { useState } from "react";
-import "./App.css";
-import { useEsbuild } from "./bundler/hooks";
+import { useState } from 'react';
+import './App.css';
+import { useCodeTransformer } from './hooks/useCodeTransformer';
 
 const App = () => {
-  const [input, setInput] = useState("const a = 1;");
-  const [code, setCode] = useState("");
-
-  const transformCode = useEsbuild();
-
-  const handleClick = async () => {
-    const code = await transformCode(input);
-    setCode(code);
-  };
+  const [input, setInput] = useState('const a = 1;');
+  const { onClick, transforming, iframeRef, srcDoc } = useCodeTransformer();
 
   return (
     <div>
@@ -20,9 +13,16 @@ const App = () => {
         onChange={(e) => setInput(e.target.value)}
       ></textarea>
       <div>
-        <button onClick={handleClick}>Submit</button>
+        <button onClick={() => onClick(input)} disabled={transforming}>
+          {transforming ? 'Transforming...' : 'Submit'}
+        </button>
       </div>
-      <pre>{code}</pre>
+      <iframe
+        ref={iframeRef}
+        sandbox="allow-scripts"
+        srcDoc={srcDoc}
+        title="Output"
+      ></iframe>
     </div>
   );
 };

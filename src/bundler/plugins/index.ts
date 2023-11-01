@@ -14,7 +14,7 @@ export const unpkgPlugin = () => {
       });
 
       // Handle relative paths in a module
-      build.onResolve({ filter: /^\.+\// }, args => {
+      build.onResolve({ filter: /^\.+\// }, (args) => {
         return {
           namespace: 'a',
           path: new URL(args.path, 'https://unpkg.com' + args.resolveDir + '/')
@@ -23,7 +23,7 @@ export const unpkgPlugin = () => {
       });
 
       // Handle main file of a module
-      build.onResolve({ filter: /.*/ }, args => ({
+      build.onResolve({ filter: /.*/ }, (args) => ({
         path: `https://unpkg.com/${args.path}`,
         namespace: 'a',
       }));
@@ -44,10 +44,11 @@ export const fetchPlugin = (inputCode: string) => {
 
       build.onLoad(
         { filter: /.*/ },
-        async args => await fileCache.getItem<esbuild.OnLoadResult>(args.path)
+        async (args) =>
+          await fileCache.getItem<esbuild.OnLoadResult>(args.path),
       );
 
-      build.onLoad({ filter: /.css$/ }, async args => {
+      build.onLoad({ filter: /.css$/ }, async (args) => {
         const response: AxiosResponse<string> = await axios.get(args.path);
         const request = response.request as { responseURL?: string };
         const escaped = response.data
@@ -71,7 +72,7 @@ export const fetchPlugin = (inputCode: string) => {
         return result;
       });
 
-      build.onLoad({ filter: /.*/ }, async args => {
+      build.onLoad({ filter: /.*/ }, async (args) => {
         const response: AxiosResponse<string> = await axios.get(args.path);
         const request = response.request as { responseURL?: string };
         const result: esbuild.OnLoadResult = {

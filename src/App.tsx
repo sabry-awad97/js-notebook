@@ -1,5 +1,7 @@
-import { useState } from 'react';
 import './App.css';
+
+import { useState } from 'react';
+import CodeEditor from './components/CodeEditor';
 import { useCodeTransformer } from './hooks/useCodeTransformer';
 
 const App = () => {
@@ -8,12 +10,9 @@ const App = () => {
 
   return (
     <div>
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      ></textarea>
+      <CodeEditor initialValue={input} onChange={(v) => v && setInput(v)} />
       <div>
-        <button onClick={() => onClick(input)} disabled={transforming}>
+        <button onClick={() => void onClick(input)} disabled={transforming}>
           {transforming ? 'Transforming...' : 'Submit'}
         </button>
       </div>

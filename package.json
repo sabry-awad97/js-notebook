@@ -24,7 +24,7 @@
     "esbuild-wasm": "^0.19.5",
     "localforage": "^1.10.0",
     "monaco-jsx-highlighter": "^2.0.4",
-    "prettier": "^3.0.3",
+    "prettier": "2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -33,7 +33,7 @@
     "@tauri-apps/cli": "^1.5.0",
     "@types/babel__traverse": "^7.20.3",
     "@types/node": "^20.8.10",
-    "@types/prettier": "^3.0.0",
+    "@types/prettier": "2.7.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",

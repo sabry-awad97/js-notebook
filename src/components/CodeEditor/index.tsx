@@ -15,7 +15,7 @@ const CodeEditor: FC<CodeEditorProps> = ({ onChange, initialValue }) => {
 
   const handleFormat = async () => {
     const unFormatted = getValue();
-    const formatted = await formatCode(unFormatted as string);
+    const formatted = formatCode(unFormatted as string);
     setValue(formatted);
   };
 

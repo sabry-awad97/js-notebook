@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useReducer } from 'react';
 import { ResizableBox, ResizableBoxProps } from 'react-resizable';
 import { useEventListener } from '../../hooks/useEventListener';
 import './resizable.css';
@@ -8,18 +8,51 @@ interface ResizableProps {
   children: ReactNode;
 }
 
+interface ResizeState {
+  innerHeight: number;
+  innerWidth: number;
+  width: number;
+}
+
+type ResizeAction =
+  | { type: 'SET_INNER_HEIGHT'; height: number }
+  | { type: 'SET_INNER_WIDTH'; width: number }
+  | { type: 'SET_WIDTH'; width: number };
+
+const initialState: ResizeState = {
+  innerHeight: window.innerHeight,
+  innerWidth: window.innerWidth,
+  width: window.innerWidth * 0.75,
+};
+
+const resizeReducer = (
+  state: ResizeState,
+  action: ResizeAction
+): ResizeState => {
+  switch (action.type) {
+    case 'SET_INNER_HEIGHT':
+      return { ...state, innerHeight: action.height };
+    case 'SET_INNER_WIDTH':
+      return { ...state, innerWidth: action.width };
+    case 'SET_WIDTH':
+      return { ...state, width: action.width };
+    default:
+      return state;
+  }
+};
+
 const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
-  const [innerHeight, setInnerHeight] = useState(window.innerHeight);
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  const [width, setWidth] = useState(window.innerWidth * 0.75);
+  const [state, dispatch] = useReducer(resizeReducer, initialState);
 
   let timer: ReturnType<typeof setTimeout>;
   useEventListener('resize', () => {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      setInnerHeight(window.innerHeight);
-      setInnerWidth(window.innerWidth);
-      if (window.innerWidth * 0.75 < width) setWidth(window.innerWidth * 0.75);
+      dispatch({ type: 'SET_INNER_HEIGHT', height: window.innerHeight });
+      dispatch({ type: 'SET_INNER_WIDTH', width: window.innerWidth });
+      if (window.innerWidth * 0.75 < state.width) {
+        dispatch({ type: 'SET_WIDTH', width: window.innerWidth * 0.75 });
+      }
     }, 100);
   });
 
@@ -30,10 +63,10 @@ const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
         minConstraints: [innerWidth * 0.2, Infinity],
         maxConstraints: [innerWidth * 0.75, Infinity],
         height: Infinity,
-        width,
+        width: state.width,
         resizeHandles: ['e'],
         onResizeStop: (_event, data) => {
-          setWidth(data.size.width);
+          dispatch({ type: 'SET_WIDTH', width: data.size.width });
         },
       },
       vertical: {

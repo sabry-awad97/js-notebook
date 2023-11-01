@@ -4,6 +4,7 @@ import { fetchPlugin, unpkgPlugin } from '../plugins';
 
 export const useEsbuild = () => {
   const [initialized, setInitialized] = useState(false);
+  const [isTransforming, setIsTransforming] = useState(false);
 
   useEffect(() => {
     const initializeEsbuild = async () => {
@@ -25,18 +26,27 @@ export const useEsbuild = () => {
       return '';
     }
 
-    const result = await esbuild.build({
-      entryPoints: ['index.js'],
-      bundle: true,
-      write: false,
-      plugins: [unpkgPlugin(), fetchPlugin(input)],
-      define: {
-        global: 'window',
-      },
-    });
+    setIsTransforming(true);
 
-    return result.outputFiles[0].text;
+    try {
+      const result = await esbuild.build({
+        entryPoints: ['index.js'],
+        bundle: true,
+        write: false,
+        plugins: [unpkgPlugin(), fetchPlugin(input)],
+        define: {
+          global: 'window',
+        },
+      });
+
+      return result.outputFiles[0].text;
+    } catch (err) {
+      console.log(err);
+      return '';
+    } finally {
+      setIsTransforming(false);
+    }
   };
 
-  return transformCode;
+  return { isTransforming, transformCode };
 };

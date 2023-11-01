@@ -2,26 +2,28 @@ import './App.css';
 
 import { useState } from 'react';
 import CodeEditor from './components/CodeEditor';
-import { useCodeTransformer } from './hooks/useCodeTransformer';
+import Preview from './components/Preview';
+import { useEsbuild } from './bundler/hooks';
 
 const App = () => {
+  const { isTransforming, transformCode } = useEsbuild();
   const [input, setInput] = useState('const a = 1;');
-  const { onClick, transforming, iframeRef, srcDoc } = useCodeTransformer();
+  const [code, setCode] = useState('');
+
+  const onClick = async () => {
+    const transformedCode = await transformCode(input);
+    setCode(transformedCode);
+  };
 
   return (
     <div>
       <CodeEditor initialValue={input} onChange={(v) => v && setInput(v)} />
       <div>
-        <button onClick={() => void onClick(input)} disabled={transforming}>
-          {transforming ? 'Transforming...' : 'Submit'}
+        <button onClick={() => void onClick()} disabled={isTransforming}>
+          {isTransforming ? 'Transforming...' : 'Submit'}
         </button>
       </div>
-      <iframe
-        ref={iframeRef}
-        sandbox="allow-scripts"
-        srcDoc={srcDoc}
-        title="Output"
-      ></iframe>
+      <Preview code={code} />
     </div>
   );
 };

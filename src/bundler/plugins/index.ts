@@ -44,8 +44,7 @@ export const fetchPlugin = (inputCode: string) => {
 
       build.onLoad(
         { filter: /.*/ },
-        async (args) =>
-          await fileCache.getItem<esbuild.OnLoadResult>(args.path),
+        async (args) => await fileCache.getItem<esbuild.OnLoadResult>(args.path)
       );
 
       build.onLoad({ filter: /.css$/ }, async (args) => {

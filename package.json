@@ -1,0 +1,43 @@
+{
+  "name": "jbook",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "format-react": "prettier src/**/*.{ts,tsx} --write",
+    "format-tauri": "cd src-tauri && cargo fmt",
+    "format": "yarn format-react && yarn format-tauri",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.2",
+    "@monaco-editor/react": "^4.6.0",
+    "@tauri-apps/api": "^1.5.0",
+    "axios": "^1.6.0",
+    "bulmaswatch": "^0.8.1",
+    "esbuild-wasm": "^0.19.5",
+    "localforage": "^1.10.0",
+    "monaco-jsx-highlighter": "^2.0.4",
+    "prettier": "^3.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@tauri-apps/cli": "^1.5.0",
+    "@types/babel__traverse": "^7.20.3",
+    "@types/prettier": "^3.0.0",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "husky": "^8.0.3",
+    "monaco-editor": "^0.44.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.4"
+  }
+}

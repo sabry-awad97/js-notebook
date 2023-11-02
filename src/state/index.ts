@@ -1,2 +1,2 @@
 export { default as usebundleStore } from './bundle-store';
-export { default as useCellStore } from './cells-store';
+export { default as useCellsStore } from './cells-store';

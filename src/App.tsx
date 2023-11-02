@@ -1,11 +1,12 @@
 import './App.css';
-
-import MarkdownEditor from './components/MarkdownEditor';
+import AddCell from './components/AddCell';
+import CellList from './components/CellList';
 
 const App = () => {
   return (
     <div>
-      <MarkdownEditor />
+      <CellList />
+      <AddCell />
     </div>
   );
 };

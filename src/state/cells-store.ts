@@ -98,13 +98,18 @@ export default create(
         const currentIndex = state.cells.order.indexOf(id);
 
         const newOrder =
-          currentIndex >= 0
+          // If the cell is the last one, simply append the new cell to the end
+          currentIndex === state.cells.order.length - 1
+            ? [...state.cells.order, newId]
+            : // If the cell is in the middle, insert the new cell after it
+            currentIndex >= 0
             ? [
                 ...state.cells.order.slice(0, currentIndex + 1),
                 newId,
                 ...state.cells.order.slice(currentIndex + 1),
               ]
-            : [newId, ...state.cells.order];
+            : // If the cell is not found, insert it at the beginning
+              [newId, ...state.cells.order];
 
         return {
           cells: {

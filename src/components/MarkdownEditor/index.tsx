@@ -1,9 +1,9 @@
 import MDEditor from '@uiw/react-md-editor';
-import './md-editor.css';
-import { useCallback, useRef, useState, ElementRef } from 'react';
+import { ElementRef, useCallback, useRef, useState } from 'react';
 import { useEventListener } from '../../hooks/useEventListener';
-import { Cell } from '../../state/cells-store';
 import { useCellsStore } from '../../state';
+import { Cell } from '../../state/cells-store';
+import './md-editor.css';
 
 interface Props {
   cell: Cell;

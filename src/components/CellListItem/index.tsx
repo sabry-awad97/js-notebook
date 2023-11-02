@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Cell } from '../../state/cells-store';
+import ActionBar from '../ActionBar';
 import CodeCell from '../CodeCell';
 import MarkdownEditor from '../MarkdownEditor';
-import ActionBar from '../ActionBar';
 
 interface Props {
   cell: Cell;

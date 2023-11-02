@@ -43,6 +43,17 @@ export default create<StoreState & StoreActions>((set) => ({
       };
     });
   },
+  deleteCell: (id) => {
+    set((state) => {
+      const { [id]: _, ...data } = state.data;
+      const order = state.order.filter((cellId) => cellId !== id);
+      return {
+        ...state,
+        data,
+        order,
+      };
+    });
+  },
   moveCell: (id, direction) => {
     set((state) => {
       return {
@@ -50,13 +61,7 @@ export default create<StoreState & StoreActions>((set) => ({
       };
     });
   },
-  deleteCell: (id) => {
-    set((state) => {
-      return {
-        ...state,
-      };
-    });
-  },
+
   insertCellBefore: (id, type) => {
     set((state) => {
       return {

@@ -30,7 +30,9 @@ const MarkdownEditor: React.FC<{}> = ({}) => {
         </div>
       ) : (
         <div className="text-editor" onClick={() => setEditing(true)}>
-          <MDEditor.Markdown source={content || 'Click to edit'} />
+          <div className="card-content">
+            <MDEditor.Markdown source={content || 'Click to edit'} />
+          </div>
         </div>
       )}
     </div>

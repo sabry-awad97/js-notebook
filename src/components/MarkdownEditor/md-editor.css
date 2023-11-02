@@ -9,6 +9,12 @@
   line-height: 1;
 }
 
+.text-editor {
+  color: #d4d4d4;
+  background-color: #1d2a38;
+  border: 0.2px solid #515151;
+}
+
 .text-editor .w-md-editor-bar svg {
   display: none;
 }

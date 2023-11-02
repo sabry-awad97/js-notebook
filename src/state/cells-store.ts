@@ -71,8 +71,19 @@ export default create<StoreState & StoreActions>((set) => ({
   },
   insertCellBefore: (id, type) => {
     set((state) => {
+      const newCell: Cell = {
+        id,
+        type,
+        content: '',
+      };
+
       return {
         ...state,
+        data: {
+          ...state.data,
+          [id]: newCell,
+        },
+        order: [...state.order, id],
       };
     });
   },

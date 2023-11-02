@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { combine } from 'zustand/middleware';
+import { nanoid } from 'nanoid';
 export type CellType = 'code' | 'markdown';
 
 export interface Cell {
@@ -19,7 +20,7 @@ type StoreActions = {
   updateCell: (id: string, content: string) => void;
   moveCell: (id: string, direction: 'up' | 'down') => void;
   deleteCell: (id: string) => void;
-  insertCellBefore: (id: string, type: CellType) => void;
+  insertCellAfter: (id: string, type: CellType) => void;
 };
 
 const initialState = {
@@ -72,21 +73,33 @@ export default create(
         };
       });
     },
-    insertCellBefore: (id, type) => {
+    insertCellAfter: (id, type) => {
       set((state) => {
+        const newId = nanoid();
         const newCell: Cell = {
-          id,
+          id: newId,
           type,
           content: '',
         };
+
+        const currentIndex = state.order.indexOf(id);
+
+        const newOrder =
+          currentIndex >= 0
+            ? [
+                ...state.order.slice(0, currentIndex + 1),
+                newId,
+                ...state.order.slice(currentIndex + 1),
+              ]
+            : [newId, ...state.order];
 
         return {
           ...state,
           data: {
             ...state.data,
-            [id]: newCell,
+            [newId]: newCell,
           },
-          order: [...state.order, id],
+          order: newOrder,
         };
       });
     },

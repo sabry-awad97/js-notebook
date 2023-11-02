@@ -26,6 +26,7 @@
     "immer": "^10.0.3",
     "localforage": "^1.10.0",
     "monaco-jsx-highlighter": "^2.0.4",
+    "nanoid": "^5.0.2",
     "prettier": "2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

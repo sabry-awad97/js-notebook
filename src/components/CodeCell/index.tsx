@@ -11,8 +11,8 @@ const CodeCell = () => {
   const [code, setCode] = useState('');
 
   const createBundle = useCallback(async () => {
-    const transformedCode = await transformCode(input);
-    setCode(transformedCode);
+    const output = await transformCode(input);
+    setCode(output.code);
   }, [input]);
 
   useEffect(() => {

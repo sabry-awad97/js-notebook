@@ -21,9 +21,11 @@ export const useEsbuild = () => {
     initializeEsbuild().catch(() => {});
   }, [initialized]);
 
-  const transformCode = async (input: string): Promise<string> => {
+  const transformCode = async (
+    input: string
+  ): Promise<{ code: string; err: string }> => {
     if (!initialized) {
-      return '';
+      return { code: '', err: '' };
     }
 
     setIsTransforming(true);
@@ -39,10 +41,10 @@ export const useEsbuild = () => {
         },
       });
 
-      return result.outputFiles[0].text;
-    } catch (err) {
+      return { code: result.outputFiles[0].text, err: '' };
+    } catch (err: any) {
       console.log(err);
-      return '';
+      return { code: '', err: err.message };
     } finally {
       setIsTransforming(false);
     }

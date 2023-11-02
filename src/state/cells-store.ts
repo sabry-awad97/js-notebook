@@ -8,58 +8,59 @@ export interface Cell {
   content: string;
 }
 
-export interface CellsState {
+export interface StoreState {
   data: {
     [key: string]: Cell;
   };
   loading: boolean;
-  error: string | null;
+  error: string;
   order: string[];
 }
 
-interface StoreState {
-  cells: CellsState;
-}
-
 type StoreActions = {
+  updateCell: (id: string, content: string) => void;
   moveCell: (id: string, direction: 'up' | 'down') => void;
   deleteCell: (id: string) => void;
   insertCellBefore: (id: string, type: CellType) => void;
-  updateCell: (id: string, content: string) => void;
 };
 
 export default create<StoreState & StoreActions>((set) => ({
-  cells: {
-    data: {},
-    loading: false,
-    error: null,
-    order: [],
+  data: {},
+  loading: false,
+  error: '',
+  order: [],
+  updateCell: (id, content) => {
+    set((state) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [id]: {
+            ...state.data[id],
+            content,
+          },
+        },
+      };
+    });
   },
   moveCell: (id, direction) => {
     set((state) => {
       return {
-        cells: { ...state.cells },
+        ...state,
       };
     });
   },
   deleteCell: (id) => {
     set((state) => {
       return {
-        cells: { ...state.cells },
+        ...state,
       };
     });
   },
   insertCellBefore: (id, type) => {
     set((state) => {
       return {
-        cells: { ...state.cells },
-      };
-    });
-  },
-  updateCell: (id, content) => {
-    set((state) => {
-      return {
-        cells: { ...state.cells },
+        ...state,
       };
     });
   },

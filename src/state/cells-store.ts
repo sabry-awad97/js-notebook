@@ -9,11 +9,15 @@ export interface Cell {
   content: string;
 }
 
-export interface StoreState {
+export interface CellsState {
   data: Record<string, Cell>;
   loading: boolean;
   error: string;
   order: string[];
+}
+
+export interface StoreState {
+  cells: CellsState;
 }
 
 type StoreActions = {
@@ -24,10 +28,12 @@ type StoreActions = {
 };
 
 const initialState = {
-  data: {},
-  loading: false,
-  error: '',
-  order: [],
+  cells: {
+    data: {},
+    loading: false,
+    error: '',
+    order: [],
+  },
 };
 
 export default create(
@@ -35,12 +41,14 @@ export default create(
     updateCell: (id, content) => {
       set((state) => {
         return {
-          ...state,
-          data: {
-            ...state.data,
-            [id]: {
-              ...state.data[id],
-              content,
+          cells: {
+            ...state.cells,
+            data: {
+              ...state.cells.data,
+              [id]: {
+                ...state.cells.data[id],
+                content,
+              },
             },
           },
         };
@@ -48,28 +56,33 @@ export default create(
     },
     deleteCell: (id) => {
       set((state) => {
-        const { [id]: _, ...data } = state.data;
-        const order = state.order.filter((cellId) => cellId !== id);
+        const { [id]: _, ...data } = state.cells.data;
+        const order = state.cells.order.filter((cellId) => cellId !== id);
         return {
-          ...state,
-          data,
-          order,
+          cells: {
+            ...state.cells,
+            data,
+            order,
+          },
         };
       });
     },
     moveCell: (id, direction) => {
       set((state) => {
-        const currentIndex = state.order.indexOf(id);
+        const currentIndex = state.cells.order.indexOf(id);
         const newIndex =
           direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-        if (newIndex < 0 || newIndex >= state.order.length) return state;
-        const newOrder = [...state.order];
-        newOrder[currentIndex] = state.order[newIndex];
+        if (newIndex < 0 || newIndex >= state.cells.order.length) return state;
+
+        const newOrder = [...state.cells.order];
+        newOrder[currentIndex] = state.cells.order[newIndex];
         newOrder[newIndex] = id;
 
         return {
-          ...state,
-          order: newOrder,
+          cells: {
+            ...state.cells,
+            order: newOrder,
+          },
         };
       });
     },
@@ -82,24 +95,27 @@ export default create(
           content: '',
         };
 
-        const currentIndex = state.order.indexOf(id);
+        const currentIndex = state.cells.order.indexOf(id);
 
         const newOrder =
           currentIndex >= 0
             ? [
-                ...state.order.slice(0, currentIndex + 1),
+                ...state.cells.order.slice(0, currentIndex + 1),
                 newId,
-                ...state.order.slice(currentIndex + 1),
+                ...state.cells.order.slice(currentIndex + 1),
               ]
-            : [newId, ...state.order];
+            : [newId, ...state.cells.order];
 
         return {
-          ...state,
-          data: {
-            ...state.data,
-            [newId]: newCell,
+          cells: {
+            data: {
+              ...state.cells.data,
+              [newId]: newCell,
+            },
+            loading: state.cells.loading,
+            error: state.cells.error,
+            order: newOrder,
           },
-          order: newOrder,
         };
       });
     },

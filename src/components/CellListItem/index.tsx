@@ -3,6 +3,7 @@ import { Cell } from '../../state/cells-store';
 import ActionBar from '../ActionBar';
 import CodeCell from '../CodeCell';
 import MarkdownEditor from '../MarkdownEditor';
+import './cell-list-item.css';
 
 interface Props {
   cell: Cell;
@@ -10,7 +11,7 @@ interface Props {
 
 const CellListItem: FC<Props> = ({ cell }) => {
   return (
-    <div>
+    <div className="cell-list-item">
       {cell.type === 'code' ? (
         <>
           <div className="action-bar-wrapper">

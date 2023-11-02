@@ -44,7 +44,9 @@ const CodeCell: React.FC<Props> = ({ cell }) => {
             onChange={(v) => v && updateCell(cell.id, v)}
           />
         </Resizable>
-        <Preview code={code} errorMessage={errorMessage} />
+        <div className="progress-wrapper">
+          <Preview code={code} errorMessage={errorMessage} />
+        </div>
       </div>
     </Resizable>
   );

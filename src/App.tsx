@@ -1,11 +1,11 @@
 import './App.css';
 
-import CodeCell from './components/CodeCell';
+import MarkdownEditor from './components/MarkdownEditor';
 
 const App = () => {
   return (
     <div>
-      <CodeCell />
+      <MarkdownEditor />
     </div>
   );
 };

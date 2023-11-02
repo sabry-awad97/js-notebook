@@ -4,24 +4,30 @@ import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
 import Resizable from '../Resizable';
 import './code-cell.css';
+import { Cell } from '../../state/cells-store';
+import { useCellsStore } from '../../state';
 
-const CodeCell = () => {
+interface Props {
+  cell: Cell;
+}
+
+const CodeCell: React.FC<Props> = ({ cell }) => {
   const { transformCode } = useEsbuild();
-  const [input, setInput] = useState('const a = 1;');
   const [code, setCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { updateCell } = useCellsStore();
 
   const createBundle = useCallback(async () => {
-    const output = await transformCode(input);
+    const output = await transformCode(cell.content);
     setCode(output.code);
     setErrorMessage(output.errorMessage);
-  }, [input]);
+  }, [cell.content]);
 
   useEffect(() => {
     const timer = setTimeout(() => createBundle(), 750);
 
     return () => clearTimeout(timer);
-  }, [input, createBundle]);
+  }, [cell.content, createBundle]);
 
   return (
     <Resizable direction="vertical">
@@ -33,7 +39,10 @@ const CodeCell = () => {
         }}
       >
         <Resizable direction="horizontal">
-          <CodeEditor initialValue={input} onChange={(v) => v && setInput(v)} />
+          <CodeEditor
+            initialValue={cell.content}
+            onChange={(v) => v && updateCell(cell.id, v)}
+          />
         </Resizable>
         <Preview code={code} errorMessage={errorMessage} />
       </div>

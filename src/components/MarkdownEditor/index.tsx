@@ -2,10 +2,17 @@ import MDEditor from '@uiw/react-md-editor';
 import './md-editor.css';
 import { useCallback, useRef, useState, ElementRef } from 'react';
 import { useEventListener } from '../../hooks/useEventListener';
+import { Cell } from '../../state/cells-store';
+import { useCellsStore } from '../../state';
 
-const MarkdownEditor: React.FC<{}> = ({}) => {
+interface Props {
+  cell: Cell;
+}
+
+const MarkdownEditor: React.FC<Props> = ({ cell }) => {
   const [editing, setEditing] = useState(false);
-  const [content, setContent] = useState('');
+  const { updateCell } = useCellsStore();
+
   const documentRef = useRef(document);
   const editorRef = useRef<ElementRef<'div'>>(null);
 
@@ -26,12 +33,15 @@ const MarkdownEditor: React.FC<{}> = ({}) => {
     <div>
       {editing ? (
         <div className="text-editor" ref={editorRef}>
-          <MDEditor value={content} onChange={(v) => setContent(v || '')} />
+          <MDEditor
+            value={cell.content}
+            onChange={(v) => v && updateCell(cell.id, v)}
+          />
         </div>
       ) : (
         <div className="text-editor" onClick={() => setEditing(true)}>
           <div className="card-content">
-            <MDEditor.Markdown source={content || 'Click to edit'} />
+            <MDEditor.Markdown source={cell.content || 'Click to edit'} />
           </div>
         </div>
       )}

@@ -8,7 +8,15 @@ interface Props {
 }
 
 const CellListItem: FC<Props> = ({ cell }) => {
-  return <div>{cell.type === 'code' ? <CodeCell /> : <MarkdownEditor />}</div>;
+  return (
+    <div>
+      {cell.type === 'code' ? (
+        <CodeCell cell={cell} />
+      ) : (
+        <MarkdownEditor cell={cell} />
+      )}
+    </div>
+  );
 };
 
 export default CellListItem;

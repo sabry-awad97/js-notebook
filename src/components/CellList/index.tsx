@@ -9,11 +9,15 @@ const CellList = () => {
 
   const cells = useMemo(() => order.map((id) => data[id]), [order, data]);
 
-  const renderedCells = cells.map((cell) => (
-    <Fragment key={cell.id}>
-      <CellListItem cell={cell} />
-    </Fragment>
-  ));
+  const renderedCells = cells.map((cell) => {
+    console.log(cell);
+
+    return (
+      <Fragment key={cell.id}>
+        <CellListItem cell={cell} />
+      </Fragment>
+    );
+  });
 
   return <div>{renderedCells}</div>;
 };

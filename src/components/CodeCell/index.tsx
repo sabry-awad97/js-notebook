@@ -9,10 +9,12 @@ const CodeCell = () => {
   const { transformCode } = useEsbuild();
   const [input, setInput] = useState('const a = 1;');
   const [code, setCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const createBundle = useCallback(async () => {
     const output = await transformCode(input);
     setCode(output.code);
+    setErrorMessage(output.errorMessage);
   }, [input]);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ const CodeCell = () => {
         <Resizable direction="horizontal">
           <CodeEditor initialValue={input} onChange={(v) => v && setInput(v)} />
         </Resizable>
-        <Preview code={code} />
+        <Preview code={code} errorMessage={errorMessage} />
       </div>
     </Resizable>
   );

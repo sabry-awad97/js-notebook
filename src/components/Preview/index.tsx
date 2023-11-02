@@ -3,9 +3,10 @@ import { useMessageSender } from '../../hooks/useMessageSender';
 
 interface Props {
   code: string;
+  errorMessage: string;
 }
 
-const Preview: FC<Props> = ({ code }) => {
+const Preview: FC<Props> = ({ code, errorMessage }) => {
   const { sendMessageToIframe, iframeElementRef, iframeSourceDoc } =
     useMessageSender();
 
@@ -20,7 +21,8 @@ const Preview: FC<Props> = ({ code }) => {
         sandbox="allow-scripts"
         srcDoc={iframeSourceDoc}
         title="Output"
-      ></iframe>
+      />
+      {errorMessage && <div className="preview-error">{errorMessage}</div>}
     </div>
   );
 };

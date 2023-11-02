@@ -1,5 +1,7 @@
 import { ElementRef, useRef } from 'react';
 
+const sleep = (ms?: number) => new Promise((r) => setTimeout(r, ms));
+
 export const useMessageSender = () => {
   const iframeElementRef = useRef<ElementRef<'iframe'>>(null);
 
@@ -22,10 +24,10 @@ export const useMessageSender = () => {
     </html>
   `;
 
-  const sendMessageToIframe = (message: string) => {
+  const sendMessageToIframe = async (message: string) => {
     if (!iframeElementRef.current) return;
     iframeElementRef.current.srcdoc = iframeSourceDoc;
-
+    await sleep(50);
     const iframeWindow = iframeElementRef.current.contentWindow;
     iframeWindow?.postMessage(message, '*');
   };

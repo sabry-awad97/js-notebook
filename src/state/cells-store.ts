@@ -56,12 +56,19 @@ export default create<StoreState & StoreActions>((set) => ({
   },
   moveCell: (id, direction) => {
     set((state) => {
+      const currentIndex = state.order.indexOf(id);
+      const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      if (newIndex < 0 || newIndex >= state.order.length) return state;
+      const newOrder = [...state.order];
+      newOrder[currentIndex] = state.order[newIndex];
+      newOrder[newIndex] = id;
+
       return {
         ...state,
+        order: newOrder,
       };
     });
   },
-
   insertCellBefore: (id, type) => {
     set((state) => {
       return {

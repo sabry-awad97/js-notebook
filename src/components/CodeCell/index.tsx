@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+import { useCellsStore, usebundleStore } from '../../state';
+import { Cell } from '../../state/cells-store';
 import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
 import Resizable from '../Resizable';
 import './code-cell.css';
-import { Cell } from '../../state/cells-store';
-import { useCellsStore, usebundleStore } from '../../state';
 
 interface Props {
   cell: Cell;

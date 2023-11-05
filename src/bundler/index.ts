@@ -6,11 +6,15 @@ let service = false;
 
 const bundle = async (input: string): Promise<BundleOutput> => {
   if (!service) {
-    await initialize({
-      wasmURL: '/esbuild.wasm',
-      worker: true,
-    });
     service = true;
+    try {
+      await initialize({
+        wasmURL: '/esbuild.wasm',
+        worker: true,
+      });
+    } catch {
+      service = false;
+    }
   }
 
   try {

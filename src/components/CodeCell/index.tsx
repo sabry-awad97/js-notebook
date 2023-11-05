@@ -1,33 +1,30 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useEsbuild } from '../../bundler/hooks';
+import { useEffect } from 'react';
 import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
 import Resizable from '../Resizable';
 import './code-cell.css';
 import { Cell } from '../../state/cells-store';
-import { useCellsStore } from '../../state';
+import { useCellsStore, usebundleStore } from '../../state';
 
 interface Props {
   cell: Cell;
 }
 
 const CodeCell: React.FC<Props> = ({ cell }) => {
-  const { transformCode } = useEsbuild();
-  const [code, setCode] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const { updateCell } = useCellsStore();
+  const { bundles, createBundle } = usebundleStore();
 
-  const createBundle = useCallback(async () => {
-    const output = await transformCode(cell.content);
-    setCode(output.code);
-    setErrorMessage(output.errorMessage);
-  }, [cell.content]);
+  const bundle = bundles[cell.id];
 
   useEffect(() => {
-    const timer = setTimeout(() => createBundle(), 750);
+    if (!bundle) {
+      createBundle(cell.id, cell.content);
+      return;
+    }
 
+    const timer = setTimeout(createBundle, 750, cell.id, cell.content);
     return () => clearTimeout(timer);
-  }, [cell.content, createBundle]);
+  }, [cell.id, cell.content, createBundle]);
 
   return (
     <Resizable direction="vertical">
@@ -45,7 +42,15 @@ const CodeCell: React.FC<Props> = ({ cell }) => {
           />
         </Resizable>
         <div className="progress-wrapper">
-          <Preview code={code} errorMessage={errorMessage} />
+          {!bundle || bundle.loading ? (
+            <div className="progress-cover">
+              <progress className="progress is-small is-primary" max="100">
+                Loading
+              </progress>
+            </div>
+          ) : (
+            <Preview code={bundle.code} errorMessage={bundle.errorMessage} />
+          )}
         </div>
       </div>
     </Resizable>

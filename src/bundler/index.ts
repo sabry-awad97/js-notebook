@@ -12,7 +12,7 @@ const bundle = async (input: string): Promise<BundleOutput> => {
         wasmURL: '/esbuild.wasm',
         worker: true,
       });
-    } catch {
+    } catch (err) {
       service = false;
     }
   }

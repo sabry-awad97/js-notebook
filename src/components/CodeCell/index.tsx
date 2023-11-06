@@ -5,6 +5,7 @@ import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
 import Resizable from '../Resizable';
 import './code-cell.css';
+import useCumulativeCode from '../../hooks/useCumulativeCode';
 
 interface Props {
   cell: Cell;
@@ -13,18 +14,19 @@ interface Props {
 const CodeCell: React.FC<Props> = ({ cell }) => {
   const { updateCell } = useCellsStore();
   const { bundles, createBundle } = usebundleStore();
-
   const bundle = bundles[cell.id];
+
+  const cumulativeCode = useCumulativeCode(cell);
 
   useEffect(() => {
     if (!bundle) {
-      createBundle(cell.id, cell.content);
+      createBundle(cell.id, cumulativeCode);
       return;
     }
 
-    const timer = setTimeout(createBundle, 750, cell.id, cell.content);
+    const timer = setTimeout(createBundle, 750, cell.id, cumulativeCode);
     return () => clearTimeout(timer);
-  }, [cell.id, cell.content]);
+  }, [cell.id, cumulativeCode]);
 
   return (
     <Resizable direction="vertical">

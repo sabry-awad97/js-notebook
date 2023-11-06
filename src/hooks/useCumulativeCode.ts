@@ -2,6 +2,26 @@ import { useMemo } from 'react';
 import { useCellsStore } from '../state';
 import { Cell } from '../state/cells-store';
 
+const extractImports = (code: string) => {
+  const importRegex =
+    /import(?:(?:(?:[ \n\t]+(?<defaultImport>[^ *\n\t\{\},]+)[ \n\t]*(?:,|[ \n\t]+))?([ \n\t]*\{(?:[ \n\t]*(?<namedImports>[^ \n\t"'\{\}]+)[ \n\t]*,?)+\})?[ \n\t]*)|[ \n\t]*\*[ \n\t]*as[ \n\t]+(?<namespaceImport>[^ \n\t\{\}]+)[ \n\t]+)from[ \n\t]*(?:['"])(?<importPath>[^'"\n]+)(['"])/g;
+  const importedLibraries = new Set();
+  const libraries = code.match(importRegex);
+  const cleanedContent = [];
+
+  if (libraries) {
+    for (const library of libraries) {
+      if (!importedLibraries.has(library)) {
+        cleanedContent.push(library);
+        importedLibraries.add(library);
+      }
+    }
+  }
+
+  cleanedContent.push(code.replace(importRegex, ''));
+  return cleanedContent.join('\n');
+};
+
 const useCumulativeCode = (currentCell: Cell) => {
   const {
     cells: { order, data },
@@ -12,27 +32,11 @@ const useCumulativeCode = (currentCell: Cell) => {
     [order, data]
   );
 
-  const cellContent = useMemo(() => {
+  const cumulativeCode = useMemo(() => {
     const cumulativeCode = [];
-    const importRegex =
-      /import(?:(?:(?:[ \n\t]+(?<defaultImport>[^ *\n\t\{\},]+)[ \n\t]*(?:,|[ \n\t]+))?([ \n\t]*\{(?:[ \n\t]*(?<namedImports>[^ \n\t"'\{\}]+)[ \n\t]*,?)+\})?[ \n\t]*)|[ \n\t]*\*[ \n\t]*as[ \n\t]+(?<namespaceImport>[^ \n\t\{\}]+)[ \n\t]+)from[ \n\t]*(?:['"])(?<importPath>[^'"\n]+)(['"])/g;
-
-    const importedLibraries = new Set<string>();
 
     for (let c of orderedCells) {
       if (c.type === 'code') {
-        const libraries = c.content.match(importRegex);
-
-        // Check if library is not already imported
-        if (libraries) {
-          for (const library of libraries) {
-            if (!importedLibraries.has(library)) {
-              cumulativeCode.push(library);
-              importedLibraries.add(library);
-            }
-          }
-        }
-
         if (c.id === currentCell.id) {
           cumulativeCode.push(`
             import _React from 'react';
@@ -57,9 +61,7 @@ const useCumulativeCode = (currentCell: Cell) => {
           cumulativeCode.push('var show = () => {}');
         }
 
-        // Push content without libraries to avoid duplication
-        const contentWithoutLibraries = c.content.replace(importRegex, '');
-        cumulativeCode.push(contentWithoutLibraries);
+        cumulativeCode.push(c.content);
       }
 
       if (c.id === currentCell.id) {
@@ -67,10 +69,10 @@ const useCumulativeCode = (currentCell: Cell) => {
       }
     }
 
-    return cumulativeCode.join('\n');
+    return extractImports(cumulativeCode.join('\n'));
   }, [orderedCells, currentCell]);
 
-  return cellContent;
+  return cumulativeCode;
 };
 
 export default useCumulativeCode;

@@ -1,16 +1,25 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
+import inject from '@rollup/plugin-inject';
 import react from '@vitejs/plugin-react';
+import { copyFile } from 'fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
-import { copyFile } from 'fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 
 // https://vitejs.dev/config/
 export default defineConfig(async ({ command }) => ({
+  define: {
+    'process.env': {},
+    'process.platform': {},
+  },
+  build: {
+    rollupOptions: {
+      plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+    },
+  },
   plugins: [
     react(),
     {
@@ -40,14 +49,7 @@ export default defineConfig(async ({ command }) => ({
       // Node.js global to browser globalThis
       define: {
         global: 'globalThis',
-      },
-      // Enable esbuild polyfill plugins
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          buffer: true,
-          process: true,
-        }),
-      ],
+      }
     },
   },
 }));

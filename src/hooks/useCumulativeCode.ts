@@ -5,16 +5,26 @@ import { Cell } from '../state/cells-store';
 const extractImports = (code: string) => {
   const importRegex =
     /import(?:(?:(?:[ \n\t]+(?<defaultImport>[^ *\n\t\{\},]+)[ \n\t]*(?:,|[ \n\t]+))?([ \n\t]*\{(?:[ \n\t]*(?<namedImports>[^ \n\t"'\{\}]+)[ \n\t]*,?)+\})?[ \n\t]*)|[ \n\t]*\*[ \n\t]*as[ \n\t]+(?<namespaceImport>[^ \n\t\{\}]+)[ \n\t]+)from[ \n\t]*(?:['"])(?<importPath>[^'"\n]+)(['"])/g;
-  const importedLibraries = new Set();
-  const libraries = code.match(importRegex);
+
+  const importedLibraries = new Set<string>();
+  const libraries = code.matchAll(importRegex);
   const cleanedContent = [];
 
-  if (libraries) {
-    for (const library of libraries) {
-      if (!importedLibraries.has(library)) {
-        cleanedContent.push(library);
-        importedLibraries.add(library);
-      }
+  for (const match of libraries) {
+    const { defaultImport, namedImports, namespaceImport } = match.groups || {};
+    const importString = match[0];
+
+    if (
+      !(
+        (defaultImport && importedLibraries.has(defaultImport)) ||
+        (namedImports && importedLibraries.has(namedImports)) ||
+        (namespaceImport && importedLibraries.has(namespaceImport))
+      )
+    ) {
+      cleanedContent.push(importString);
+      if (defaultImport) importedLibraries.add(defaultImport);
+      if (namedImports) importedLibraries.add(namedImports);
+      if (namespaceImport) importedLibraries.add(namespaceImport);
     }
   }
 
